@@ -26,7 +26,6 @@ public class Parque implements IParque {
 		}
 		
 		comprobarAntesDeEntrar();
-				
 		
 		// Aumentamos el contador total y el individual
 		contadorPersonasTotales++;		
@@ -36,7 +35,6 @@ public class Parque implements IParque {
 		imprimirInfo(puerta, "Entrada");
 		
 		notifyAll();
-		
 		
 		checkInvariante();
 		
@@ -50,8 +48,7 @@ public class Parque implements IParque {
 			contadoresPersonasPuerta.put(puerta, 0);
 		}
 		
-		comprobarAntesDeSalir();
-				
+		comprobarAntesDeSalir();		
 		
 		// Aumentamos el contador total y el individual
 		contadorPersonasTotales--;		
@@ -62,12 +59,9 @@ public class Parque implements IParque {
 		
 		notifyAll();
 		
-		
 		checkInvariante();
 		
 	}
-	
-	
 	
 	private void imprimirInfo (String puerta, String movimiento){
 		System.out.println(movimiento + " por puerta " + puerta);
@@ -96,15 +90,27 @@ public class Parque implements IParque {
 	}
 
 	protected synchronized void comprobarAntesDeEntrar(){	
-		//
-		// TODO
-		//
+		if (contadorPersonasTotales >= aforoMaximo) {
+			try {
+				wait();
+			} 
+			catch (InterruptedException ex) {
+				Thread.currentThread().interrupt(); 
+				ex.printStackTrace();
+			}
+		}
 	}
 
 	protected synchronized void comprobarAntesDeSalir(){		
-		//
-		// TODO
-		//
+		if (contadorPersonasTotales == 0) {
+			try {
+				wait();
+			} 
+			catch (InterruptedException ex) {
+				Thread.currentThread().interrupt(); 
+				ex.printStackTrace();
+			}
+		}
 	}
 
 
