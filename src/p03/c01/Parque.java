@@ -3,30 +3,29 @@ package src.p03.c01;
 import java.util.Enumeration;
 import java.util.Hashtable;
 
-public class Parque implements IParque{
+public class Parque implements IParque {
 
-
-	// TODO 
+	private int aforoMaximo;
 	private int contadorPersonasTotales;
 	private Hashtable<String, Integer> contadoresPersonasPuerta;
 	
 	
-	public Parque() {	// TODO
+	public Parque(int aforo) {	
 		contadorPersonasTotales = 0;
 		contadoresPersonasPuerta = new Hashtable<String, Integer>();
-		// TODO
+		aforoMaximo = aforo;
 	}
 
 
 	@Override
-	public void entrarAlParque(String puerta){		// TODO
+	public synchronized void entrarAlParque(String puerta){		
 		
 		// Si no hay entradas por esa puerta, inicializamos
 		if (contadoresPersonasPuerta.get(puerta) == null){
 			contadoresPersonasPuerta.put(puerta, 0);
 		}
 		
-		// TODO
+		comprobarAntesDeEntrar();
 				
 		
 		// Aumentamos el contador total y el individual
@@ -36,16 +35,38 @@ public class Parque implements IParque{
 		// Imprimimos el estado del parque
 		imprimirInfo(puerta, "Entrada");
 		
-		// TODO
+		notifyAll();
 		
 		
-		// TODO
+		checkInvariante();
 		
 	}
 	
-	// 
-	// TODO Método salirDelParque
-	//
+	@Override
+	public synchronized void salirDelParque(String puerta){		
+		
+		// Si no hay entradas por esa puerta, inicializamos
+		if (contadoresPersonasPuerta.get(puerta) == null){
+			contadoresPersonasPuerta.put(puerta, 0);
+		}
+		
+		comprobarAntesDeSalir();
+				
+		
+		// Aumentamos el contador total y el individual
+		contadorPersonasTotales--;		
+		contadoresPersonasPuerta.put(puerta, contadoresPersonasPuerta.get(puerta)-1);
+		
+		// Imprimimos el estado del parque
+		imprimirInfo(puerta, "Salida");
+		
+		notifyAll();
+		
+		
+		checkInvariante();
+		
+	}
+	
 	
 	
 	private void imprimirInfo (String puerta, String movimiento){
